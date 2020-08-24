@@ -1,0 +1,110 @@
+field types:
+  event: condition set
+  agent: entity
+  operation: operation
+  input: entity set
+  output: entity set
+  restriction: string set
+
+allowed types:
+  equal:
+    - entity
+    - entity set
+    - operation
+    - condition set
+    - string set
+  include:
+    - entity
+    - entity set
+    - operation
+    - condition set
+    - string set
+  contradict:
+    - operation
+    - condition set
+
+operators:
+  equal:
+    entity: 'lambda x, y: (x.base == y.base and list_eq(x.modifier, y.modifier)) or (x.is_all and not y.is_all)'
+    operation: 'lambda x, y: x.predicate == y.predicate and x.Able == y.Able and x.Not == y.Not'
+    condition set: 'lambda x, y: Operators.condition_set_include(x, y) and Operators.condition_set_include(y, x)'
+    entity set: 'lambda x, y: Operators.entity_set_include(x, y) and Operators.entity_set_include(y, x)'
+    string set: 'lambda x, y: list_eq(x, y)'
+  include:
+    entity: 'lambda x, y: (x.base == y.base and list_gt(y.modifier, x.modifier)) or (y.entirety == x)'
+    operation: 'lambda x, y: (x.predicate == y.predicate and x.Able == y.Able and x.Not == y.Not) or (x.predicate == y.predicate and not x.Able and y.Able)'
+    condition set: 'lambda x, y: Operators.condition_set_include(x, y)'
+    entity set: 'lambda x, y: Operators.entity_set_include(x, y)'
+    string set: 'lambda x, y: list_gt(x, y)'
+  contradict:
+    operation: 'lambda x, y: x.predicate == y.predicate and not x.Able and not y.Able'
+    condition set: 'lambda x, y: Operators.condition_contradict(x)'
+
+rules:
+  input output include:
+    or:
+      - and:
+        - 1 input include 2 input
+        - 1 output include 2 output
+      - and:
+        - 2 input include 1 input
+        - 2 output include 1 output
+
+  condition contradict:
+    and:
+      - 1 agent equal 2 agent
+      - 1 operation contradict 2 operation
+      - function: input output include
+
+  operation inconsistency:
+    and:
+      - 1 event equal 2 event
+      - function: condition contradict
+
+  restriction inconsistency:
+    and:
+      - 1 event equal 2 event
+      - 1 agent equal 2 agent
+      - 1 operation equal 2 operation
+      - not: 1 restriction equal 2 restriction
+      - function: input output include
+
+  event inconsistency:
+    and:
+      - function: input output include
+      - for:
+          label: or
+          index: 1
+          field: event
+          condition:
+            function: condition contradict
+
+  condition include:
+    and:
+      - 1 agent equal 2 agent
+      - 1 operation include 2 operation
+      - 1 input include 2 input
+      - 1 output include 2 output
+      - 1 restriction include 2 restriction
+
+  operation inclusion:
+    and:
+      - 1 event equal 2 event
+      - function: condition include
+
+  event inclusion:
+    and:
+      - 1 event include 2 event
+      - 1 agent equal 2 agent
+      - 1 operation equal 2 operation
+      - 1 input equal 2 input
+      - 1 output equal 2 output
+      - 1 restriction equal 2 restriction
+
+  operation event interlock:
+    for:
+      label: or
+      index: 2
+      field: event
+      condition:
+        function: condition include

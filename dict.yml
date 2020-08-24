@@ -1,0 +1,45 @@
+before condition:
+  - when
+  - if
+
+before instance:
+  - such as
+  - for example
+  - for instance
+  - including
+  - etc
+
+before restriction:
+  - without
+  - within
+  - via
+  - as long as
+  - until
+
+stop words:
+  - 'then '
+  - 'in turn '
+  - '_'
+  - '"'
+
+modal verbs:
+  - must
+  - shall
+  - should
+  - can
+  - may
+
+before adj clause:
+  - that
+  - which
+  - who
+  - whom
+
+able words:
+  - 'provide the means to '
+  - 'provide means to '
+  - 'provide a way to '
+  - 'provide the way to '
+  - 'provide the ability to '
+
+

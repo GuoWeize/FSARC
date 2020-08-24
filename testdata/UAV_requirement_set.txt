@@ -1,0 +1,99 @@
+When requested, the _VehicleCore_ shall transition the UAV between states according to allowed state transitions as depicted in the UAV state transition diagram.
+If a client registers for notifications, the _UIMiddleware_ shall send notifications for specific events.
+The _VehicleCore_ shall assign a unique ID to each activated UAV.
+The _SingleUAVFlightPlanScheduler_ shall only execute one flight plan at a time for each UAV.
+The _UAVActivationManager_ shall ensure that only one instance of each registered drone is active at any time.
+The _VehicleCore_ shall associate a UAV_TYPE for each UAV defining UAV's basic attributes.
+Each waypoint shall be specified using coordinates that include longitude latitude and altitude.
+When a flight plan is executed, the _VehicleCore_ shall send the next waypoint to the UAV.
+The _SingleUAVFlightPlanScheduler_ shall maintain a managed list of pending flight plans for Each UAV.
+If requested, the _SingleUAVFlightPlanScheduler_ shall unassign the flight plan assigned to a UAV that is awaiting execution.
+If a UAV has pending flight plans, then when the UAV reaches the final waypoint of UAV's current flight plan, the _SingleUAVFlightPlanScheduler_ shall execute the next assigned flight plan.
+When a UAV's current flight is cancelled, the _SingleUAVFlightPlanScheduler_ shall in turn cancel all scheduled flight plans for that UAV.
+The _UIMiddleware_ shall provide an interface for registering UI clients.
+The _UIMiddleware_ shall assign one control-client at a time for each UAV.
+If a command is issued by the _VaadinUI_ for an UAV, the _VaadinUI_ shall request control of that UAV.
+When the _RealTimeFlightUI_ is loaded, a map shall be displayed.
+The _RealTimeFlightUI_ shall display the location of active UAVs as icons on the map.
+When a stationary or moving object is within the proximity of a UAV, the _ObjectAvoidance_ system shall issue evasive directives to the UAV.
+If a UAV takes evasive actions, the system shall ensure that the UAV will eventually reach UAV's destination.
+The _ObjectAvoidance_ system shall only issue commands within the capabilities of the UAV.
+When a UAV has an active onboard Obstacle Avoidance, then the _ObstacleAvoidance_ system shall not issue directives.
+When a _GCS_ requests activation of a newly detected UAV, the _GCSMiddleware_ shall forward the request to Dronology.
+The _UAVActivationManager_ shall only activate UAVs that are registered.
+When the _GCS_ loses the connection to an UAV, the _GCS_ shall attempt to reconnect.
+When the "return to home" command is issued, the _FlightManager_ shall return the UAV to UAV's original launch location without issuing any additional waypoint or routing commands.
+The _FlightRouteManager_ shall define flight routes as an ordered sequence of waypoints in which the first waypoint represents the first target location and the final waypoint represents the final target location.
+The _FlightRouteManager_ shall ensure that all flight routes represent a VALID_FLIGHT_ROUTE.
+The _FlightRouteManager_ shall persist flight routes.
+When a flight route requires a customized takeoff altitude that differs from the system's default takeoff altitude, the altitude shall be specified in the flight route.
+When requested, the _CoordinateSystem_ shall transform coordinates to alternate formats.
+When given two coordinates, the _CoordinateSystem_ shall compute the distance between them.
+When given two coordinates, the _CoordinateSystem_ shall compute the direction from the first coordinate to the second coordinate.
+When the "hover in place" command is issued, the _FlightManager_ shall halt the UAV in place and maintain UAV's current position.
+If a flight route is assigned to a UAV which is currently hovering in place, the _FlightManager_ shall assign the route and maintain the hover in place mode.
+If a flight plan is active and the "hover in place" command is rescinded, the _FlightManager_ shall notify the UAV to continue to the originally designated waypoint.
+When a flight plan is activated for a UAV currently on the ground, the _FlightSchedulingandExecution_ shall notify the UAV to takeoff vertically until UAV reaches the prescribed altitude.
+The _MissionPlanner_ shall manage predefined FlightPatterns.
+When requested, if a mission is currently active, the _MissionPlanner_ shall cancel the active mission.
+When requested, the _SingleUAVFlightPlanScheduler_ shall schedule a route for execution.
+If a route contains a specific UAV_ID, the _SingleUAVFlightPlanScheduler_ shall assign the route to the given UAV.
+If a scheduled flight is not manually assigned to a UAV, the _SingleUAVFlightPlanScheduler_ shall assign the route automatically to an UAV.
+If a UAV does not have any pending flight plans, then when the UAV reaches the final waypoint of UAV's current flight plan, the _SingleUAVFlightPlanScheduler_ shall notify the UAV to hover in place.
+If requested, the _SingleUAVFlightPlanScheduler_ shall abort the currently executing flight plan of an UAV.
+A flight pattern shall document the longitude latitude and altitude of waypoints in a flight route as offsets from the starting position of the UAV.
+When a group of UAVs are assigned flight patterns as part of a mission, the system shall provide a warning if any paths overlap.
+The _VehicleCore_ shall support UAVs connected via the _GCS_.
+The _VehicleCore_ shall support virtual UAVs.
+When a UAV is deactivated, the _UAVActivationManager_ shall cancel all current and scheduled flight plans.
+When the maximum numbers of allowed activated UAVs has been reached, the _UAVActivationManager_ shall reject any further activation requests.
+The _UAVRegistrationManager_ shall store UAV meta-data information such as the UAV's technical characteristics.
+The _InternalSimulator_ shall approximate the behavior of a UAV.
+When given a takeoff command, the _InternalSimulator_ shall move the UAV to the takeoff altitude corresponding to UAV's current longitude and latitude.
+When given a goto command, the _InternalSimulator_ shall update the location of the UAV at increments of SIMULATION_STEP_SIZE meters moving the UAV towards the target destination until the destination is reached.
+When given a landing command, the _InternalSimulator_ shall move the UAV to the ground altitude corresponding to UAV's current longitude and latitude.
+The _InternalSimulator_ shall approximate the state of the battery.
+The _ActivityLogger_ shall log all flight plan related events.
+The _ActivityLogger_ shall log all commands sent to and messages received from a _CGS_.
+The _UIMiddleware_ shall provide a list of all active UAVs.
+The _UIMiddleware_ shall provide a list of all existing routes.
+The _UIMiddleware_ shall accept commands from UIs and forwards to Dronology.
+The _UIMiddleware_ shall enable the creation and modification of flight routes.
+The _UIMiddleware_ shall enable an existing route to be assigned to an active UAV.
+The _UIMiddleware_ shall accept and activate a mission plan upon request.
+When the _VaadinUI_ is activated, the _VaadinUI_ shall be configured according to stored configuration parameters.
+When loading the map view, the map view shall be positioned at the pre-defined location.
+The _RouteAssignmentUI_ shall provide means to select an existing routes and assign them to a UAV.
+When a route is assigned from a UAV, the _RouteAssignmentUI_ shall notify Dronology.
+When requested by the user, the _RouteAssignmentUI_ shall display details about the selected UAV and UAV's flight plans.
+When a UAV is selected, the _RouteAssignmentUI_ shall display UAV's active flight plans.
+A user may reorder routes or remove flight plans assigned to a UAV as long as the flight has not started execution.
+When a user shall cancels a pending flight plan, the _RouteAssignmentUI_ shall notify Dronology.
+The _RouteCreationUI_ shall distinguish between starting ending and intermediate waypoint markers.
+The _RouteCreationUI_ shall only accept valid altitude and speed values for waypoint.
+Each route shall include a unique ID a textual description and a set of waypoints all of which are editable in the UI.
+When requested, the _RouteCreationUI_ shall send a newly created or modified route to dronology.
+The _RouteCreationUI_ shall allow the user to create and modify a route.
+The _RouteCreationUI_ shall allow a user to delete a route.
+When the _RouteCreationUI_ is loaded, a list of all existing routes shall be displayed.
+The _RealTimeFlightUI_ shall display the name and status of all currently activated UAVs.
+The _RealTimeFlightUI_ shall display all currently active flight plans on the map.
+The _RealTimeFlightUI_ shall allow users to apply flight operations to one or more selected UAVs.
+The _RealTimeFlightUI_ shall allow users to perform emergency operations to a group of UAVs.
+The _RealTimeFlightUI_ shall allow users to follow one or multiple UAVs on the map.
+The _RealTimeFlightUI_ shall notify users when an emergency occurs.
+The _DronologyRuntimeMonitor_ shall provide functionality to retrieve monitoring messages and distribute them to clients.
+When a new monitoring message is received, the _DronologyRuntimeMonitor_ shall forward the message to all subscribed clients.
+The _DronologyRuntimeMonitor_ shall be able to receive messages from any Dronology component.
+The _GCSMiddleware_ shall handle multiple _GCS_.
+The _GCSMiddleware_ shall follow a predefined set of steps to establish a connection between a _GCS_ and Dronology.
+The _GCSMiddleware_ shall handle state messages monitoring messages and mode change messages received from an _GCS_.
+The _GCSMiddleware_ shall forward commands sent from Dronology to a _GCS_.
+When the connection to the _GCS_ from the _GCSMiddleware_ is lost, the _GCSMiddleware_ shall notify Dronology and deactivate all associated UAVs.
+When the _GCS_ receives a UAV command from the _GCSMiddleware_, the _GCS_ shall forward the command to the respective UAV.
+The _GCS_ shall assign a message frequency for all UAVs.
+The _GCS_ shall report newly connected UAVs to the _GCSMiddleware_.
+The _GCS_ shall transmit the UAV's current location to the _GCSMiddleware_.
+The _GCS_ shall transmit the UAV's properties to the _GCSMiddleware_.
+The _MissionPlanner_ shall execute flight plans for multiple UAVs concurrently.
+The _MapComponent_ shall support different types of map layers.
